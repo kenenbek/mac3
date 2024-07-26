@@ -1042,14 +1042,12 @@ def models_optimize_objective(x):
 
 from cobrascape.kenenbek import get_input_of_fva
 from functools import partial
-def models_optimize_fva(x):
-    sol = Species_Object_Global.strains.get_by_id(x).cobra_model.optimize()
-    print(sol.objective_value, " strain model")
-    result_return = (x, flux_variability_analysis(Species_Object_Global.strains.get_by_id(x).cobra_model, 
+def models_optimize_fva(x, save_samples_dir, t):
+    result_return = (x, flux_variability_analysis(Species_Object_Global.strains.get_by_id(x).cobra_model,
                                                   reaction_list=Reaction_List_Global, 
                                                   fraction_of_optimum=Fraction_Opt_Global,
                                                   processes=1).T.to_dict())
-    #get_input_of_fva(Species_Object_Global.strains.get_by_id(x).cobra_model, x, save_samples_dir, t)
+    get_input_of_fva(Species_Object_Global.strains.get_by_id(x).cobra_model, x, save_samples_dir, t)
     return result_return 
 
 
@@ -1204,8 +1202,8 @@ def sample_species(model,save_samples_dir,variants,flux_samples, fva_rxn_set="va
         with ProcessPool(processes, initializer=species_init_Objective, initargs=(model,popfva_reacts_set,fva_frac_opt)) as pool:
             try:
                 if fva==True:
-                    #m_o_fva_partial = partial(models_optimize_fva, save_samples_dir=save_samples_dir, t=t)
-                    future = pool.map(models_optimize_fva, [x.id for x in model.strains], timeout=100)
+                    m_o_fva_partial = partial(models_optimize_fva, save_samples_dir=save_samples_dir, t=t)
+                    future = pool.map(m_o_fva_partial, [x.id for x in model.strains], timeout=120)
                     future_iterable = future.result()
                     pheno = list(future_iterable)
                     save_json_obj(dict(pheno), save_samples_dir+"sample_"+str(t)+"_FVA.json")
