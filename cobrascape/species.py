@@ -1221,7 +1221,7 @@ def sample_species(model,save_samples_dir,variants,flux_samples, fva_rxn_set="va
                 continue
             except Exception as error:
                 print("function raised %s" % error)
-                break
+                continue
         
         pool.close()
         pool.stop()
