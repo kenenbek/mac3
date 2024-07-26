@@ -1044,7 +1044,7 @@ from cobrascape.kenenbek import get_input_of_fva
 from functools import partial
 def models_optimize_fva(x):
     sol = Species_Object_Global.strains.get_by_id(x).cobra_model.optimize()
-    print(sol, " strain model")
+    print(sol.objective_value, " strain model")
     result_return = (x, flux_variability_analysis(Species_Object_Global.strains.get_by_id(x).cobra_model, 
                                                   reaction_list=Reaction_List_Global, 
                                                   fraction_of_optimum=Fraction_Opt_Global,
