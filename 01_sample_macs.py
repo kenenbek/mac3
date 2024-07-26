@@ -211,6 +211,8 @@ if GENERATE_SAMPLES==True:
         save_json_model(COBRA_MODEL,ENSEMBLE_BASEMODEL_FILE)
         
     base_flux_samples = pd.read_csv(MODEL_SAMPLES_FILE,index_col=0)
+    from cobrascape.kenenbek import clean_flux_samples
+    base_flux_samples = clean_flux_samples(COBRA_MODEL, base_flux_samples)
 
     ### Create Species object
     SPECIES_MODEL = cs.Species("species_obj")
