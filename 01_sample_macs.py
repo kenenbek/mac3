@@ -34,7 +34,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from statsmodels.discrete.discrete_model import Logit #.fit
 from statsmodels.tools import add_constant
 ### other shit 
-resource.setrlimit(resource.RLIMIT_NOFILE, (10000,-1))
+#resource.setrlimit(resource.RLIMIT_NOFILE, (10000,-1))
 warnings.filterwarnings("ignore")  # sklearn gives hella warnings.
 
 # Argument parsing
@@ -56,7 +56,7 @@ parser.add_argument('--nabound', dest='add_na_bound', action='store_true',
                     help='Determines whether each allele can map to a no_change constraint (default: False). Type --nabound to set to True')
 parser.add_argument('--fracopt',type=float,dest='FVA_frac_opt', default=0.0,
                     help='fraction_of_optimum parameter in cobrapy flux_variability_analysis function (default: 0.0)')
-parser.add_argument('--fracpfba',dest='FVA_pfba_fract', default=1.1,
+parser.add_argument('--fracpfba',type=float,dest='FVA_pfba_fract', default=1.1,
                     help='pfba_factor parameter in cobrapy flux_variability_analysis function (default: 1.1)')
 parser.add_argument('--openexch',type=bool,dest='FVA_open_exchanges', default=True,
                     help='open_exchanges parameter in cobrapy find_blocked_reactions function (default: True)')
