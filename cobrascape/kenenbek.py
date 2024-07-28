@@ -3,8 +3,68 @@ import os
 import numpy as np
 import pandas as pd
 import cobra
+import torch
 from tqdm import tqdm, trange
 import scipy.optimize as opt
+
+from torch_geometric.data import HeteroData
+
+
+def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter, fva_df):
+    S = cobra.util.create_stoichiometric_matrix(COBRA_MODEL)
+    m = S.shape[0]
+    n = S.shape[1]
+    c = np.array([-reaction.objective_coefficient for reaction in COBRA_MODEL.reactions])
+    b = np.zeros(S.shape[0])
+
+    EdgeIndex = []
+    EdgeFeature = []
+
+    # Loop through the matrix to find non-zero entries
+    for i in range(m):
+        for j in range(n):
+            if S[i, j] != 0:
+                EdgeIndex.append((i, j))
+                EdgeFeature.append(S[i, j])
+
+    # Convert lists to appropriate numpy arrays
+    EdgeIndex = np.array(EdgeIndex)
+    EdgeFeature = np.array(EdgeFeature)
+
+    bounds = []
+    for reaction in COBRA_MODEL.reactions:
+        bounds.append([reaction.lower_bound, reaction.upper_bound])
+
+    result = opt.linprog(c, A_eq=S, b_eq=b, bounds=bounds)
+
+    constr_features = b.reshape(m, 1)
+    reaction_features = np.hstack((c.reshape(n, 1), bounds))
+
+    data = HeteroData()
+
+    data["reactions"].x = torch.from_numpy(reaction_features)
+    data["reactions"].y = torch.from_numpy(fva_df.values)
+
+    data["constraints"].x = torch.from_numpy(constr_features)
+    data["constraints", "limit", "reactions"].edge_index = torch.from_numpy(EdgeIndex.T)
+    data["constraints", "limit", "reactions"].edge_attr = torch.from_numpy(EdgeFeature)
+    data["objective_value"] = torch.from_numpy(-result.objective_value)
+
+    save_name = f"{save_samples_dir}/{strain_id}--{num_iter}.pth"
+
+    torch.save(data, save_name)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def get_input_of_fva(COBRA_MODEL, strain_id, save_samples_dir, num_iter):
@@ -35,7 +95,7 @@ def get_input_of_fva(COBRA_MODEL, strain_id, save_samples_dir, num_iter):
 
     result = opt.linprog(c, A_eq=S, b_eq=b, bounds=bounds)
 
-    path = os.path.join(save_samples_dir, str(strain_id) + "__" + str(num_iter))
+    path = os.path.join(save_samples_dir, str(strain_id) + "---" + str(num_iter))
     if not os.path.exists(path):
         os.makedirs(path)
 
