@@ -48,7 +48,7 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
     data["constraints"].x = torch.from_numpy(constr_features)
     data["constraints", "limit", "reactions"].edge_index = torch.from_numpy(EdgeIndex.T)
     data["constraints", "limit", "reactions"].edge_attr = torch.from_numpy(EdgeFeature)
-    data["objective_value"] = torch.from_numpy(-result.objective_value)
+    data["objective_value"] = torch.tensor(-result.fun)
 
     save_name = f"{save_samples_dir}/{strain_id}--{num_iter}.pth"
 
