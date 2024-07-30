@@ -1052,7 +1052,8 @@ from functools import partial
 
 def models_optimize_fva(x, save_samples_dir, t):
     fva_df = flux_variability_analysis(Species_Object_Global.strains.get_by_id(x).cobra_model,
-                                       reaction_list=Reaction_List_Global,
+                                       #reaction_list=Reaction_List_Global,
+                                       reaction_list=None,
                                        fraction_of_optimum=Fraction_Opt_Global,
                                        processes=1)
     result_return = (x, fva_df.T.to_dict())
