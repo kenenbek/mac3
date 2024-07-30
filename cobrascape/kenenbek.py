@@ -39,15 +39,18 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
 
     constr_features = b.reshape(m, 1)
     reaction_features = np.hstack((c.reshape(n, 1), bounds))
-    print(fva_df.values.shape)
     data = HeteroData()
 
     data["reactions"].x = torch.from_numpy(reaction_features)
     data["reactions"].y = torch.from_numpy(fva_df.values)
 
     data["constraints"].x = torch.from_numpy(constr_features)
-    data["constraints", "limit", "reactions"].edge_index = torch.from_numpy(EdgeIndex.T)
-    data["constraints", "limit", "reactions"].edge_attr = torch.from_numpy(EdgeFeature)
+    data["constraints", "to", "reactions"].edge_index = torch.from_numpy(EdgeIndex.T)
+    data["constraints", "to", "reactions"].edge_attr = torch.from_numpy(EdgeFeature)
+
+    data["reactions", "to", "constraints"].edge_index = torch.from_numpy(EdgeIndex.T).flip(0)
+    data["reactions", "to", "constraints"].edge_attr = torch.from_numpy(EdgeFeature)
+
     data["objective_value"] = torch.tensor(-result.fun)
 
     save_name = f"{save_samples_dir}/{strain_id}--{num_iter}.pth"
