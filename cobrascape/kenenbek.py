@@ -53,6 +53,12 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
 
     data["objective_value"] = torch.tensor(-result.fun)
 
+    data["S"] = S
+    data["m"] = m
+    data["n"] = n
+    data["c"] = c
+    data["b"] = b
+    
     save_name = f"{save_samples_dir}/{strain_id}--{num_iter}.pth"
 
     torch.save(data, save_name)
