@@ -255,7 +255,8 @@ if GENERATE_SAMPLES==True:
     ### --- Generate ensemble of random allele-constraint maps and their corresponding popFVA landscapes
     pool_obj = cs.sample_species(SPECIES_MODEL, POPFVA_SAMPLES_DIR, players, base_flux_samples,
                                  fva_rxn_set="var_reacts", start_samp=None, samples_n=NUM_SAMPLES, fva=True,
-                                 fva_frac_opt=FVA_frac_opt, action_n=action_num, add_na_bound=ADD_NA_BOUND)
+                                 fva_frac_opt=FVA_frac_opt, action_n=action_num, add_na_bound=ADD_NA_BOUND,
+                                 processes=8)
 
     print("...sampling of MNC allele-constraint maps and popFVA landscapes finished! ...")
 else:
