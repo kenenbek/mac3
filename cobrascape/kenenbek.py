@@ -54,8 +54,6 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
     data["objective_value"] = torch.tensor(-result.fun)
 
     data["S"] = torch.from_numpy(S)
-    data["m"] = torch.from_numpy(m)
-    data["n"] = torch.from_numpy(n)
     data["c"] = torch.from_numpy(c)
     data["b"] = torch.from_numpy(b)
 
