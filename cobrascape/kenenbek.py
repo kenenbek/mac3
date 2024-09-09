@@ -53,14 +53,17 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
 
     data["objective_value"] = torch.tensor(-result.fun)
 
-    data["S"] = torch.from_numpy(S)
-    data["c"] = torch.from_numpy(c)
-    data["b"] = torch.from_numpy(b)
+    # data["S"] = torch.from_numpy(S)
+    # data["c"] = torch.from_numpy(c)
+    # data["b"] = torch.from_numpy(b)
 
     save_name = f"{save_samples_dir}/{strain_id}--{num_iter}.pth"
 
     torch.save(data, save_name)
-
+    if not os.path.exists(f"{save_samples_dir}/S.pth"):
+        torch.save(S, f"{save_samples_dir}/S.pth")
+        torch.save(c, f"{save_samples_dir}/c.pth")
+        torch.save(b, f"{save_samples_dir}/b.pth")
 
 
 
