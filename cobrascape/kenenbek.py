@@ -42,7 +42,7 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
     data = HeteroData()
 
     data["reactions"].x = torch.from_numpy(reaction_features)
-    data["reactions"].y = torch.from_numpy(fva_df.values)
+    data["reactions"].fva = torch.from_numpy(fva_df.values)
 
     data["constraints"].x = torch.from_numpy(constr_features)
     data["constraints", "to", "reactions"].edge_index = torch.from_numpy(EdgeIndex.T)
