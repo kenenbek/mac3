@@ -29,7 +29,7 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
 
     # Convert lists to appropriate numpy arrays
     EdgeIndex = np.array(EdgeIndex)
-    EdgeFeature = np.array(EdgeFeature)
+    EdgeFeature = np.array(EdgeFeature).astype(np.float64)
 
     bounds = []
     for reaction in COBRA_MODEL.reactions:
@@ -37,8 +37,8 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
 
     result = opt.linprog(c, A_eq=S, b_eq=b, bounds=bounds)
 
-    constr_features = b.reshape(m, 1)
-    reaction_features = bounds # np.hstack((c.reshape(n, 1), bounds))
+    constr_features = b.reshape(m, 1).astype(np.float64)
+    reaction_features = np.array(bounds).astype(np.float64) # np.hstack((c.reshape(n, 1), bounds))
     data = HeteroData()
 
     data["reactions"].x = torch.from_numpy(reaction_features)
@@ -51,7 +51,7 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
     data["reactions", "to", "constraints"].edge_index = torch.from_numpy(EdgeIndex.T).flip(0)
     data["reactions", "to", "constraints"].edge_attr = torch.from_numpy(EdgeFeature)
 
-    data["objective_value"] = torch.tensor(-result.fun)
+    data["objective_value"] = torch.tensor(-np.float64(result.fun))
     data["biomass_index"] = np.argmin(c)
 
     # data["S"] = torch.from_numpy(S)
