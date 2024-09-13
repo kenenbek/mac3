@@ -52,6 +52,7 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
     data["reactions", "to", "constraints"].edge_attr = torch.from_numpy(EdgeFeature)
 
     data["objective_value"] = torch.tensor(-result.fun)
+    data["biomass_index"] = np.argmin(c)
 
     # data["S"] = torch.from_numpy(S)
     # data["c"] = torch.from_numpy(c)
@@ -64,16 +65,6 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
         torch.save(S, f"{save_samples_dir}/S.pth")
         torch.save(c, f"{save_samples_dir}/c.pth")
         torch.save(b, f"{save_samples_dir}/b.pth")
-
-
-
-
-
-
-
-
-
-
 
 
 
