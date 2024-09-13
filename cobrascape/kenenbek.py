@@ -38,7 +38,7 @@ def convert_to_graph_and_save(COBRA_MODEL, strain_id, save_samples_dir, num_iter
     result = opt.linprog(c, A_eq=S, b_eq=b, bounds=bounds)
 
     constr_features = b.reshape(m, 1)
-    reaction_features = np.hstack((c.reshape(n, 1), bounds))
+    reaction_features = bounds # np.hstack((c.reshape(n, 1), bounds))
     data = HeteroData()
 
     data["reactions"].x = torch.from_numpy(reaction_features)
